@@ -92,7 +92,7 @@ How to setup and deploy the example:
 
    `find . -type f -name '*.yaml' -exec sed -i -e 's>{{ENVIRONMENT}}>'beta'>g' {} +`
 
-1. Set your Okta details and Vouch configuration in `sso-secrets.yaml`
+1. Set your Okta details and Vouch configuration in the [secrets][kubernetes-secrets] file `sso-secrets.yaml`
 
 1. Run Kustomize
 
@@ -104,3 +104,4 @@ How to setup and deploy the example:
 
 [okta-app-howto]: https://shogo.eu/blog/2021/11/30/Creating-a-Single-Sign-On-application-in-Okta/
 [vp-config]: https://github.com/vouch/vouch-proxy/blob/f8410f4ab8569021c389f7a030254b516ae34980/config/config.yml_example
+[kubernetes-secrets]: https://kubernetes.io/docs/concepts/configuration/secret/

@@ -70,6 +70,10 @@ export VOUCH_PORT=9090
 
 There is no special configuration to perform on NGINX, before running this example, however you might want to customize it for your use-case, before deployment.
 
+### Starting Docker
+
+After you're done with the configuration, just run `docker compose up -d` and you're done.
+
 ### Configuration for Kubernetes
 
 The repository includes an example on how to configure this setup, when deploying to Kubernetes - it is located under the folder `.kubernetes`

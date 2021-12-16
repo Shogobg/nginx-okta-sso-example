@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: '{{DEPLOYMENT_NAME}}'
+  namespace: '{{K8S_NAMESPACE}}'
+spec:
+  selector:
+    matchLabels:
+      name: '{{DEPLOYMENT_NAME}}'
+  template:
+    spec:
+      containers:
+        - name: vouch-proxy
+          image: quay.io/vouch/vouch-proxy:alpine-0.35.1
+          imagePullPolicy: 'IfNotPresent'
+          envFrom:
+          - secretRef:
+              name: sso-secrets
+          env:
+            - name: ENVIRONMENT
+              value: '{{ENVIRONMENT}}'
+            - name: TZ
+              value: Asia/Tokyo
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+          resources:
+            limits:
+              cpu: 100m
+              memory: 200Mi
+            requests:
+              cpu: 100m
+              memory: 200Mi
+          securityContext:
+            runAsUser: 1000

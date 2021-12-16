@@ -1,0 +1,66 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: '{{DEPLOYMENT_NAME}}'
+  namespace: '{{K8S_NAMESPACE}}'
+spec:
+  selector:
+    matchLabels:
+      name: '{{DEPLOYMENT_NAME}}'
+  template:
+    spec:
+      containers:
+        - name: '{{APP_NAME}}'
+          image: '{{DOCKER_IMAGE}}'
+          imagePullPolicy: 'IfNotPresent'
+          resources:
+            limits:
+              cpu: 100m
+              memory: 200Mi
+            requests:
+              cpu: 100m
+              memory: 200Mi
+          securityContext:
+            runAsUser: 1000
+          ports:
+            - containerPort: 8080
+          volumeMounts:
+            - name: logging
+              mountPath: /var/log/nginx
+            - name: data
+              mountPath: /var/cache/nginx
+            - name: upstream
+              mountPath: /var/nginxconf/upstream.conf
+              subPath: upstream
+          env:
+            - name: ENVIRONMENT
+              value: '{{ENVIRONMENT}}'
+            - name: TZ
+              value: Asia/Tokyo
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 8080
+            failureThreshold: 3
+            initialDelaySeconds: 15
+            timeoutSeconds: 15
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 8080
+            failureThreshold: 3
+            initialDelaySeconds: 15
+            timeoutSeconds: 15
+      volumes:
+        - name: logging
+          emptyDir: {}
+        - name: data
+          emptyDir: {}
+        - name: upstream
+          configMap:
+            defaultMode: 0640
+            name: upstream-{{APP_NAME}}-{{ENVIRONMENT}}
